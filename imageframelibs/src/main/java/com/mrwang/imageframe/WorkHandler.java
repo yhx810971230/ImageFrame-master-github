@@ -1,6 +1,7 @@
 package com.mrwang.imageframe;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 
@@ -18,10 +19,13 @@ public class WorkHandler extends android.os.HandlerThread {
 
   private volatile List<WorkMessageProxy> messageProxyList;
 
+  Looper looper = null;
+
   public WorkHandler() {
     super("WorkHandler", Process.THREAD_PRIORITY_BACKGROUND);
     start();
-    workHandler = new Handler(getLooper()) {
+    looper = getLooper();
+    workHandler = new Handler(looper) {
       @Override
       public void handleMessage(Message msg) {
         if (messageProxyList != null) {
@@ -33,6 +37,11 @@ public class WorkHandler extends android.os.HandlerThread {
     };
   }
 
+  public void quitLooper(){
+    if(null != looper){
+      looper.quit();
+    }
+  }
 
   public void post(Runnable run) {
     workHandler.post(run);

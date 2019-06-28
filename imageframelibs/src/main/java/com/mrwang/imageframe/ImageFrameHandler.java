@@ -232,6 +232,17 @@ public class ImageFrameHandler implements WorkHandler.WorkMessageProxy {
         isRunning = false;
     }
 
+    public void stop(boolean quitLooper){
+        workHandler.getHandler().removeCallbacksAndMessages(null);
+        workHandler.removeMessageProxy(this);
+        if(quitLooper){
+            workHandler.quitLooper();
+        }
+        handler.removeCallbacksAndMessages(null);
+//        resources = null;
+        isRunning = false;
+    }
+
     /**
      * 新增方法
      * 暂停
