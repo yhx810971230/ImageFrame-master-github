@@ -7,6 +7,7 @@ import android.os.Process;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 后台单线程的handler
@@ -17,7 +18,10 @@ import java.util.List;
 public class WorkHandler extends android.os.HandlerThread {
     private Handler workHandler = null;
 
-    private volatile List<WorkMessageProxy> messageProxyList;
+    /**
+     * 使用CopyOnWriteArrayList线程安全的集合防止两个handler同时访问列表
+     */
+    private volatile CopyOnWriteArrayList<WorkMessageProxy> messageProxyList;
 
     Looper looper = null;
 
@@ -79,7 +83,7 @@ public class WorkHandler extends android.os.HandlerThread {
 
     private void initMessageProxyList() {
         if (messageProxyList == null) {
-            messageProxyList = new ArrayList<>();
+            messageProxyList = new CopyOnWriteArrayList<WorkMessageProxy>();
         }
     }
 
